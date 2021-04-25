@@ -1,24 +1,8 @@
-import { Tree, formatFiles, readWorkspaceConfiguration, readProjectConfiguration, generateFiles, ProjectConfiguration } from '@nrwl/devkit';
-import path from 'path';
+import { Tree, formatFiles, readWorkspaceConfiguration, readProjectConfiguration, generateFiles } from '@nrwl/devkit';
+import * as path from 'path';
 import { EntitySchema } from './schema';
 import { strings } from '@angular-devkit/core';
-
-function addLibExport(host: Tree, projConfig: ProjectConfiguration, schema: EntitySchema): void {
-  const indexTsPath = path.join(projConfig.sourceRoot, 'index.ts');
-  const indexTs = host.read(indexTsPath).toString();
-
-  const entityFileName = `./${strings.dasherize(schema.entity)}.ts`;
-  const entityName = strings.capitalize(schema.entity);
-  const dataServiceFileName = `./${strings.dasherize(schema.entity)}.data-service.ts`;
-  const dataServiceName = strings.capitalize(schema.entity) + 'DataService';
-
-  const updatedIndexTs = indexTs + `
-export { ${entityName} } from ${entityFileName};
-export { ${dataServiceName} } from ${dataServiceFileName};
-`;
-
-  host.write(indexTsPath, updatedIndexTs);
-}
+import { addLibExport } from '../utils/add-lib-export2';
 
 export default async function (host: Tree, schema: EntitySchema) {
   const workspaceConf = readWorkspaceConfiguration(host);
@@ -33,17 +17,22 @@ export default async function (host: Tree, schema: EntitySchema) {
 
   const projConf = readProjectConfiguration(host, schema.project);
 
+  if (projConf.projectType !== 'library') {
+    throw new Error('Project is not a library!');
+  }
+
   generateFiles(
     host,
     path.join(__dirname, 'files'),
-    projConf.sourceRoot,
+    path.join(projConf.sourceRoot, 'lib'),
     {
       entity: strings.dasherize(schema.entity),
-      strings
+      templ: '',
+      ...strings
     }
   );
 
-  addLibExport(host, projConf, schema);
+  addLibExport(host, projConf, schema.entity);
 
   await formatFiles(host);
 }

@@ -17,5 +17,5 @@
       "description": "Project name"
     }   
   },
-  "required": ["name"]
+  "required": ["entity"]
 }

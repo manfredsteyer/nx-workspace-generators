@@ -145,6 +145,31 @@
           }
         }
       }
+    },
+    "my-dal": {
+      "projectType": "library",
+      "root": "libs/my-dal",
+      "sourceRoot": "libs/my-dal/src",
+      "prefix": "myworkspace",
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/my-dal/src/**/*.ts",
+              "libs/my-dal/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/my-dal"],
+          "options": {
+            "jestConfig": "libs/my-dal/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
