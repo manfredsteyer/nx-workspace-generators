@@ -1,5 +1,4 @@
-import { Tree, formatFiles, readWorkspaceConfiguration, readProjectConfiguration, generateFiles } from '@nrwl/devkit';
-import * as path from 'path';
+import { Tree, formatFiles, readWorkspaceConfiguration, readProjectConfiguration, generateFiles, joinPathFragments } from '@nrwl/devkit';
 import { EntitySchema } from './schema';
 import { strings } from '@angular-devkit/core';
 import { addLibExport } from '../utils/add-lib-export2';
@@ -23,8 +22,8 @@ export default async function (host: Tree, schema: EntitySchema) {
 
   generateFiles(
     host,
-    path.join(__dirname, 'files'),
-    path.join(projConf.sourceRoot, 'lib'),
+    joinPathFragments(__dirname, 'files'),
+    joinPathFragments(projConf.sourceRoot, 'lib'),
     {
       entity: strings.dasherize(schema.entity),
       templ: '',
@@ -32,7 +31,9 @@ export default async function (host: Tree, schema: EntitySchema) {
     }
   );
 
+  // index.ts
   addLibExport(host, projConf, schema.entity);
+
 
   await formatFiles(host);
 }

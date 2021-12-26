@@ -7,9 +7,9 @@ export function addLibExport(host: Tree, projConfig: ProjectConfiguration, entit
     const indexTs = host.read(indexTsPath).toString();
   
     const entityFileName = `./lib/${strings.dasherize(entity)}`;
-    const entityName = strings.capitalize(entity);
+    const entityName = strings.classify(entity);
     const dataServiceFileName = `./lib/${strings.dasherize(entity)}.data-service`;
-    const dataServiceName = strings.capitalize(entity) + 'DataService';
+    const dataServiceName = strings.classify(entity) + 'DataService';
   
     const updatedIndexTs = indexTs + `
   export { ${entityName} } from '${entityFileName}';
